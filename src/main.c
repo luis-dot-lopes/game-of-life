@@ -19,7 +19,7 @@ char grid[GRID_SIZE] = {0};
 char other_grid[GRID_SIZE] = {0};
 
 char get_grid_cell(size_t row, size_t col) {
-    if(row > 0 && row < GRID_HEIGHT && col > 0 && col < GRID_WIDTH) {
+    if(row >= 0 && row < GRID_HEIGHT && col >= 0 && col < GRID_WIDTH) {
         return grid[GRID_WIDTH * row + col];
     }
     return 0;
@@ -50,13 +50,13 @@ void render_game(GE_GameInstance *game) {
         for(size_t j = 0; j < GRID_WIDTH; ++j) {
             if(get_grid_cell(i, j)) {
                 GE_Rect square = {
-                    .x = j * CELL_SIZE,
-                    .y = i * CELL_SIZE,
-                    .width = CELL_SIZE,
-                    .height = CELL_SIZE,
+                    .x = j * CELL_SIZE + 1,
+                    .y = i * CELL_SIZE + 1,
+                    .width = CELL_SIZE - 1,
+                    .height = CELL_SIZE - 1,
                 };
 
-                GE_Rect_draw(game, square);
+                GE_Rect_fill(game, square);
             }
         }
     }
@@ -89,9 +89,11 @@ int main(void) {
     GE_Clock clock = GE_newClock(60);
 
     bool quit = false;
+    bool paused = false;
 
-    set_grid_cell(0, 0, 1);
-    set_grid_cell(0, 1, 1);
+    set_grid_cell(11, 4, 1);
+    set_grid_cell(11, 5, 1);
+    set_grid_cell(11, 6, 1);
 
     while(!quit) {
 
@@ -104,11 +106,33 @@ int main(void) {
             continue;
         }
 
+        if(in->keysJustPressed[GE_K_SPACE]) {
+            paused = !paused;
+        }
+
+        if(in->mouseButton == GE_MOUSE_LEFT && in->mouseJustPressed) {
+            int row = in->mouseY / CELL_SIZE;
+            int col = in->mouseX / CELL_SIZE;
+
+            set_grid_cell(row, col, !get_grid_cell(row, col));
+        }
+
         render_game(game);
+
+        if(in->keysJustPressed[GE_K_N]) {
+            update_game();
+            GE_clockEndTick(&clock);
+            continue;
+        }
+
+        if(paused) {
+            GE_clockEndTick(&clock);
+            continue;
+        }
         
-        //if(clock.ticks % 10 == 0) {
-            //update_game();
-        //}
+        if(clock.ticks % 20 == 0) {
+            update_game();
+        }
 
         GE_clockEndTick(&clock);
     }

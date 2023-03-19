@@ -13,7 +13,7 @@
 
 //Exposes mouse buttons
 typedef enum {
-    GE_MOUSE_NONE = -1,
+    GE_MOUSE_NONE = 0,
     GE_MOUSE_RIGHT = SDL_BUTTON(SDL_BUTTON_RIGHT),
     GE_MOUSE_MIDDLE = SDL_BUTTON(SDL_BUTTON_MIDDLE),
     GE_MOUSE_LEFT = SDL_BUTTON(SDL_BUTTON_LEFT),
@@ -27,6 +27,7 @@ typedef struct {
     int mouseX;
     int mouseY;
     MouseButton mouseButton;
+    bool mouseJustPressed;
 } GE_InputState;
 
 //Exposes the main keys of the keyboard.

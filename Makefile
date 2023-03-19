@@ -8,5 +8,5 @@ LINKER_FLAGS = -lSDL2
 OBJ_NAME = game
 
 all: $(OBJS)
-	$(CC) $(OBJS) $(LINKER_FLAGS) -o $(OBJ_NAME)
+	$(CC) -g $(OBJS) $(LINKER_FLAGS) -o $(OBJ_NAME)
 

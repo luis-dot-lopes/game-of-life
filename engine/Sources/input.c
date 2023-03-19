@@ -6,6 +6,7 @@ GE_InputState* GE_initInput() {
     inputSingleton->quit = false;
 
     inputSingleton->mouseButton = GE_MOUSE_NONE;
+    inputSingleton->mouseJustPressed = false;
 
     return inputSingleton;
 }
@@ -30,9 +31,15 @@ void GE_updateInputState(GE_InputState *inputSingleton) {
             inputSingleton->keysJustPressed[i] = false;
         }
     }
-    inputSingleton->mouseButton = SDL_GetMouseState(&inputSingleton->mouseX,
-                                                    &inputSingleton->mouseY);
 
+    Uint32 button = SDL_GetMouseState(&inputSingleton->mouseX, &inputSingleton->mouseY);
+    if(button != GE_MOUSE_NONE) {
+        inputSingleton->mouseJustPressed = inputSingleton->mouseButton == GE_MOUSE_NONE;
+        inputSingleton->mouseButton = button;
+    } else {
+        inputSingleton->mouseJustPressed = false; 
+        inputSingleton->mouseButton = GE_MOUSE_NONE;
+    }
 }
 
 void GE_freeInputState(GE_InputState *inputSingleton) {
